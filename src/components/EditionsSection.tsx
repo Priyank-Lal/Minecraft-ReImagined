@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import EditionCard from './EditionCard';
-import { useIntersectionObserver } from '../hooks/useIntersectionObserver';
 
 const editions = [
   {
@@ -50,7 +49,7 @@ const EditionsSection: React.FC = () => {
   const [visibleEditions, setVisibleEditions] = useState<Set<string>>(new Set());
   
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-800 to-slate-900 py-20">
+    <div className="editions-section min-h-screen bg-gradient-to-b from-slate-800 to-slate-900 py-20">
       <div className="container mx-auto px-6">
         <motion.div
           initial={{ opacity: 0, y: 50 }}
@@ -60,7 +59,7 @@ const EditionsSection: React.FC = () => {
           className="text-center mb-16"
         >
           <h2 className="text-5xl md:text-7xl font-bold text-white mb-6">
-            Choose Your
+            <span className="block">Choose Your</span>
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-blue-400 block">
               Adventure
             </span>

@@ -1,10 +1,10 @@
 import React, { Suspense, useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Canvas } from '@react-three/fiber';
 import { ArrowLeft, Play, Download, Star, Users, Gamepad2 } from 'lucide-react';
-import ModelLoader from '../components/3d/ModelLoader';
+import LazyModel from '../components/LazyModel';
 import LoadingScreen from '../components/LoadingScreen';
+import { useSmoothScroll } from '../hooks/useSmoothScroll';
 
 const editions = {
   java: {
@@ -108,6 +108,9 @@ const EditionDetail: React.FC = () => {
   const { editionId } = useParams<{ editionId: string }>();
   const [showTrailer, setShowTrailer] = useState(false);
   const edition = editionId ? editions[editionId as keyof typeof editions] : null;
+  
+  // Initialize smooth scrolling
+  useSmoothScroll();
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -217,18 +220,11 @@ const EditionDetail: React.FC = () => {
               className="relative h-96 lg:h-[500px]"
             >
               <div className="w-full h-full rounded-2xl overflow-hidden bg-gradient-to-br from-slate-700/50 to-slate-800/50 border border-slate-600/50">
-                <Canvas
-                  camera={{ position: [0, 0, 5], fov: 50 }}
-                  gl={{ antialias: true, alpha: true }}
-                >
-                  <ambientLight intensity={0.4} />
-                  <pointLight position={[10, 10, 10]} intensity={0.8} />
-                  <pointLight position={[-10, -10, 5]} intensity={0.3} color={edition.color} />
-                  
-                  <Suspense fallback={null}>
-                    <ModelLoader modelType={edition.model} color={edition.color} />
-                  </Suspense>
-                </Canvas>
+                <LazyModel 
+                  modelType={edition.model} 
+                  color={edition.color}
+                  className="w-full h-full"
+                />
               </div>
               
               {/* Glow Effect */}
@@ -348,13 +344,15 @@ const EditionDetail: React.FC = () => {
             className="bg-slate-800 rounded-2xl overflow-hidden max-w-4xl w-full aspect-video"
             onClick={(e) => e.stopPropagation()}
           >
-            <iframe
-              src={edition.trailer}
-              title={`${edition.name} Trailer`}
-              className="w-full h-full"
-              allowFullScreen
-              loading="lazy"
-            />
+            {showTrailer && (
+              <iframe
+                src={edition.trailer}
+                title={`${edition.name} Trailer`}
+                className="w-full h-full"
+                allowFullScreen
+                loading="lazy"
+              />
+            )}
           </motion.div>
         </motion.div>
       )}

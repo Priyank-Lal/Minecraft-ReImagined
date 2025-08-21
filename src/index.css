@@ -2,6 +2,27 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Lenis smooth scrolling */
+html.lenis {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto;
+}
+
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+.lenis.lenis-scrolling iframe {
+  pointer-events: none;
+}
+
 /* Cosmic stars animation */
 .stars {
   width: 100%;
@@ -54,12 +75,27 @@ html {
 /* Performance optimizations */
 * {
   box-sizing: border-box;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 .gpu-accelerated {
   transform: translateZ(0);
   backface-visibility: hidden;
   perspective: 1000;
+  will-change: transform;
+}
+
+/* Optimize 3D rendering */
+canvas {
+  display: block;
+  outline: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Intersection observer optimization */
+.model-container {
+  contain: layout style paint;
 }
 
 /* Reduce motion for accessibility */

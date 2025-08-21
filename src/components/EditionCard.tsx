@@ -1,9 +1,8 @@
 import React, { useRef, useEffect, Suspense } from 'react';
 import { motion, useInView } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { Canvas } from '@react-three/fiber';
 import { ArrowRight, Gamepad2 } from 'lucide-react';
-import OptimizedModelLoader from './3d/OptimizedModelLoader';
+import LazyModel from './LazyModel';
 
 interface Edition {
   id: string;
@@ -44,8 +43,9 @@ const EditionCard: React.FC<EditionCardProps> = ({
       viewport={{ once: true, margin: '-100px' }}
       whileHover={{ scale: 1.02 }}
       className={`flex items-center gap-12 ${isEven ? 'flex-row' : 'flex-row-reverse'} 
-                  bg-slate-800/50 backdrop-blur-sm rounded-2xl p-8 hover:bg-slate-800/70 
-                  transition-all duration-500 border border-slate-700/50 group cursor-pointer`}
+                  edition-card bg-slate-800/50 backdrop-blur-sm rounded-2xl p-8 hover:bg-slate-800/70 
+                  transition-all duration-500 border border-slate-700/50 group cursor-pointer
+                  hover:shadow-2xl hover:shadow-${edition.color}/20`}
     >
       {/* Content Side */}
       <div className="flex-1 space-y-6">
@@ -115,28 +115,15 @@ const EditionCard: React.FC<EditionCardProps> = ({
       {/* 3D Model Side */}
       <div className="w-80 h-80 relative">
         <motion.div 
-          className="w-full h-full rounded-2xl overflow-hidden bg-gradient-to-br from-slate-700/50 to-slate-800/50 border border-slate-600/50 group-hover:border-slate-500/50 transition-all duration-300"
+          className="w-full h-full rounded-2xl overflow-hidden bg-gradient-to-br from-slate-700/50 to-slate-800/50 border border-slate-600/50 group-hover:border-slate-500/50 transition-all duration-300 model-container"
           whileHover={{ rotateY: 5, rotateX: 2 }}
           style={{ perspective: '1000px' }}
         >
-          <Canvas
-            camera={{ position: [0, 0, 5], fov: 50 }}
-            gl={{ antialias: true, alpha: true, powerPreference: 'high-performance' }}
-            performance={{ min: 0.5 }}
-            frameloop={inView ? 'always' : 'never'}
-          >
-            <ambientLight intensity={0.4} />
-            <pointLight position={[10, 10, 10]} intensity={0.8} />
-            <pointLight position={[-10, -10, 5]} intensity={0.3} color={edition.color} />
-            
-            <Suspense fallback={null}>
-              <OptimizedModelLoader 
-                modelType={edition.model} 
-                color={edition.color} 
-                isVisible={inView}
-              />
-            </Suspense>
-          </Canvas>
+          <LazyModel 
+            modelType={edition.model} 
+            color={edition.color}
+            className="w-full h-full"
+          />
         </motion.div>
         
         {/* Enhanced Glow Effect */}
